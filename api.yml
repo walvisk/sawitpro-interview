@@ -83,13 +83,46 @@ paths:
             format: int64
       responses:
         '200':
-          description: pet response
+          description: success response for GET users/{id}
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProfileResponse'
         default:
-          description: unexpected error
+          description: error response for GET users/{id}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      description: update user data
+      operationId: updateUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to fetch
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: request body for PATCH /users/{id}
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUser'
+      responses:
+        '200':
+          description: success response for PATCH /users/{id}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateUser'
+        default:
+          description: error response for PATCH /users/{id}
           content:
             application/json:
               schema:
@@ -161,6 +194,17 @@ components:
         full_name:
           type: string
 
+    UpdateUser:
+      type: object
+      required:
+        - phone
+        - full_name
+      properties:
+        phone:
+          type: string
+        full_name:
+          type: string
+
     ErrorResponse:
       type: object
       required:
@@ -194,3 +238,4 @@ components:
 
 
 # TODO: can unify response or request to same user component
+# can be User compenent and add omit omit

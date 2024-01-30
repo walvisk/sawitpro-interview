@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"errors"
 	"strings"
 
 	"github.com/SawitProRecruitment/UserService/generated"
@@ -50,10 +49,6 @@ func (s *service) FindUserByPhone(c context.Context, phoneParam string) (*reposi
 		return nil, err
 	}
 
-	if user == nil {
-		return nil, errors.New("wrong phone number")
-	}
-
 	return user, nil
 }
 
@@ -63,9 +58,20 @@ func (s *service) FindUserByID(c context.Context, id int64) (*repository.User, e
 		return nil, err
 	}
 
-	if user == nil {
-		return nil, errors.New("user not found")
+	return user, nil
+}
+
+func (s *service) UpdateUser(c context.Context, u *repository.User, fullName, phone string) error {
+	phoneNo, countryCode := utils.GetPhoneAndCountryCode(strings.TrimSpace(phone))
+
+	u.CountryCode = countryCode
+	u.Phone = phoneNo
+	u.FullName = strings.TrimSpace(fullName)
+
+	err := s.repository.UpdateUser(c, u)
+	if err != nil {
+		return err
 	}
 
-	return user, nil
+	return nil
 }

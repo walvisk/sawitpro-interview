@@ -1,88 +1,69 @@
 package handler
 
 import (
-	"errors"
 	"regexp"
 
 	"github.com/SawitProRecruitment/UserService/generated"
 )
 
 type UserValidator struct {
-	FullName  string
-	Phone     string
-	Password  string
-	UserError *generated.ErrorResponse
+	FullName string
+	Phone    string
+	Password string
+	Errors   []*generated.ErrorResponseDetail
 }
 
-func (us *UserValidator) HasError() bool {
-	if len(us.UserError.Fields) > 0 {
-		return true
-	}
-
-	return false
-}
-
-func (us *UserValidator) Validate() {
-	errDetails := make([]*generated.ErrorResponseDetail, 0)
-	if err := ValidateFullName(us.FullName); err != nil {
-		errDetails = append(errDetails, &generated.ErrorResponseDetail{
-			Error: err.Error(),
+func (uv *UserValidator) ValidateFullName() *UserValidator {
+	if uv.FullName != "" && (len(uv.FullName) < 3 || len(uv.FullName) > 60) {
+		uv.Errors = append(uv.Errors, &generated.ErrorResponseDetail{
+			Error: "must be between 3 and 60 characters",
 			Field: "full_name",
 		})
 	}
+	return uv
+}
 
-	if err := ValidatePhone(us.Phone); err != nil {
-		errDetails = append(errDetails, &generated.ErrorResponseDetail{
-			Error: err.Error(),
+func (uv *UserValidator) ValidatePhone() *UserValidator {
+	if len(uv.Phone) < 3 {
+		uv.Errors = append(uv.Errors, &generated.ErrorResponseDetail{
+			Error: "phone number must be between 10 and 13 characters",
+			Field: "phone",
+		})
+
+		return uv
+	}
+
+	countryCode, phoneNumber := uv.Phone[:3], uv.Phone[3:]
+	if len(phoneNumber) < 10 || len(phoneNumber) > 13 || countryCode != "+62" {
+		uv.Errors = append(uv.Errors, &generated.ErrorResponseDetail{
+			Error: "phone number must be between 10 and 13 characters and start with '+62'",
 			Field: "phone",
 		})
 	}
 
-	if err := ValidatePassword(us.Password); err != nil {
-		errDetails = append(errDetails, &generated.ErrorResponseDetail{
-			Error: err.Error(),
-			Field: "password",
+	return uv
+}
+
+func (uv *UserValidator) ValidatePassword() *UserValidator {
+	if len(uv.Password) < 6 || len(uv.Password) > 64 ||
+		!containsCapital(uv.Password) ||
+		!containsNumber(uv.Password) ||
+		!containsSpecial(uv.Password) {
+		uv.Errors = append(uv.Errors, &generated.ErrorResponseDetail{
+			Error: "password must be between 6 and 64 characters and contain at least 1 capital letter, 1 number, and 1 special character",
+			Field: "phone",
 		})
 	}
 
-	var errResponse *generated.ErrorResponse
-	if len(errDetails) > 0 {
-		errResponse.Kind = "BadRequest"
-		errResponse.Message = "Invalid Request Format"
-		errResponse.Fields = errDetails
-	}
-
-	us.UserError = errResponse
+	return uv
 }
 
-func ValidateFullName(fullName string) error {
-	if fullName != "" && (len(fullName) < 3 || len(fullName) > 60) {
-		return errors.New("must be between 3 and 60 characters")
-	}
-	return nil
-}
-
-func ValidatePhone(phone string) error {
-	if len(phone) < 3 {
-		return errors.New("phone number must be between 10 and 13 characters")
+func (uv *UserValidator) HasError() bool {
+	if len(uv.Errors) > 0 {
+		return true
 	}
 
-	countryCode, phoneNumber := phone[:3], phone[3:]
-	if len(phoneNumber) < 10 || len(phoneNumber) > 13 || countryCode != "+62" {
-		return errors.New("phone number must be between 10 and 13 characters and start with '+62'")
-	}
-
-	return nil
-}
-
-func ValidatePassword(password string) error {
-	if len(password) < 6 || len(password) > 64 ||
-		!containsCapital(password) ||
-		!containsNumber(password) ||
-		!containsSpecial(password) {
-		return errors.New("password must be between 6 and 64 characters and contain at least 1 capital letter, 1 number, and 1 special character")
-	}
-	return nil
+	return false
 }
 
 // containsCapital checks if the password contains at least 1 capital letter.

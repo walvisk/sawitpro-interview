@@ -49,6 +49,21 @@ func (mr *MockRepositoryInterfaceMockRecorder) CreateUser(arg0, arg1 interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockRepositoryInterface)(nil).CreateUser), arg0, arg1)
 }
 
+// FindUserByID mocks base method.
+func (m *MockRepositoryInterface) FindUserByID(arg0 context.Context, arg1 int64) (*User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindUserByID", arg0, arg1)
+	ret0, _ := ret[0].(*User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindUserByID indicates an expected call of FindUserByID.
+func (mr *MockRepositoryInterfaceMockRecorder) FindUserByID(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindUserByID", reflect.TypeOf((*MockRepositoryInterface)(nil).FindUserByID), arg0, arg1)
+}
+
 // FindUserByPhoneAndCountryCode mocks base method.
 func (m *MockRepositoryInterface) FindUserByPhoneAndCountryCode(arg0 context.Context, arg1, arg2 string) (*User, error) {
 	m.ctrl.T.Helper()

@@ -3,6 +3,9 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"strings"
+	"time"
 )
 
 func (r *Repository) CreateUser(ctx context.Context, u *User) (int64, error) {
@@ -92,4 +95,49 @@ func (r *Repository) FindUserByID(ctx context.Context, id int64) (*User, error) 
 	}
 
 	return &user, nil
+}
+
+func (r *Repository) UpdateUser(ctx context.Context, u *User) error {
+	var setClause strings.Builder
+	var setParams []interface{}
+
+	if u.FullName != "" {
+		setClause.WriteString("full_name = $2, ")
+		setParams = append(setParams, u.FullName)
+	}
+
+	if u.Phone != "" {
+		setClause.WriteString("phone = $3, ")
+		setParams = append(setParams, u.Phone)
+	}
+
+	setClause.WriteString("updated_at = $4")
+	setParams = append(setParams, time.Now())
+
+	query := fmt.Sprintf(`
+		UPDATE users
+		SET %s
+		WHERE id = $1
+		RETURNING id, full_name, phone, country_code, created_at, updated_at
+	`, setClause.String())
+	params := append([]interface{}{u.ID}, setParams...)
+
+	tx, err := r.Db.Begin()
+	if err != nil {
+		return err
+	}
+
+	err = tx.QueryRowContext(ctx, query, u.ID, params).Scan(
+		&u.ID,
+		&u.FullName,
+		&u.Phone,
+		&u.CountryCode,
+		&u.CreatedAt,
+		&u.UpdatedAt,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
