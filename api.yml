@@ -1,5 +1,5 @@
 # This is the OpenAPI specification for your service. It is used to generate the client code.
-# To generate the server code, use the Gradle task `openApiGenerate`. The 
+# To generate the server code, use the Gradle task `openApiGenerate`. The
 # generated code will be placed in `build/generate-resources/main`.
 #
 # We will evaluate you based on how well you design your API.
@@ -17,42 +17,85 @@ info:
 servers:
   - url: http://localhost
 paths:
-  /hello:
-    get:
-      summary: This is just a test endpoint to get you started. Please delete this endpoint.
-      operationId: hello
-      parameters:
-        - name: id
-          in: query
-          required: true
-          schema:
-            type: integer
+  /users:
+    post:
+      summary: Create new user
+      operationId: CreateUser
+      requestBody:
+        description: request body for POST /users
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
       responses:
-        '200':
-          description: Test return
-          content:
-            application/json:    
-              schema:
-                $ref: "#/components/schemas/HelloResponse"
-        '404':
-          description: Not found
+        '201':
+          description: success response for POST /users
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/CreateUserResponse'
+        default:
+          description: error response for POST /users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 components:
   schemas:
-    HelloResponse:
+    CreateUserRequest:
       type: object
       required:
-        - message
+        - phone
+        - full_name
+        - password
       properties:
-        message:
+        phone:
           type: string
+        full_name:
+          type: string
+        password:
+          type: string
+
+    CreateUserResponse:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+
     ErrorResponse:
       type: object
       required:
         - message
+        - kind
       properties:
         message:
           type: string
+          x-go-type-skip-optional-pointer: true
+        kind:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        fields:
+          type: array
+          x-go-omitempty: true
+          x-go-type-skip-optional-pointer: true
+          items:
+            $ref: '#/components/schemas/ErrorResponseDetail'
+          x-go-type: "[]*ErrorResponseDetail"
+
+    ErrorResponseDetail:
+      type: object
+      properties:
+        field:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        error:
+          type: string
+          x-go-type-skip-optional-pointer: true
+
+

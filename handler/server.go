@@ -1,15 +1,19 @@
 package handler
 
-import "github.com/SawitProRecruitment/UserService/repository"
+import (
+	"github.com/SawitProRecruitment/UserService/service/user"
+)
 
 type Server struct {
-	Repository repository.RepositoryInterface
+	UserService user.Service
 }
 
 type NewServerOptions struct {
-	Repository repository.RepositoryInterface
+	UserService user.Service
 }
 
 func NewServer(opts NewServerOptions) *Server {
-	return &Server{}
+	return &Server{
+		UserService: opts.UserService,
+	}
 }
