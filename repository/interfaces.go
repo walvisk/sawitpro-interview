@@ -7,5 +7,6 @@ package repository
 import "context"
 
 type RepositoryInterface interface {
-	CreateUser(ctx context.Context, u *User) (int64, error)
+	CreateUser(context.Context, *User) (int64, error)
+	FindUserByPhoneAndCountryCode(context.Context, string, string) (*User, error)
 }

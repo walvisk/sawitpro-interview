@@ -2,11 +2,12 @@ package user
 
 import (
 	"context"
+	"errors"
 	"strings"
 
 	"github.com/SawitProRecruitment/UserService/generated"
 	"github.com/SawitProRecruitment/UserService/repository"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/SawitProRecruitment/UserService/utils"
 )
 
 type service struct {
@@ -27,7 +28,7 @@ func (s *service) RegisterUser(c context.Context, param generated.CreateUserJSON
 		Phone:       strings.TrimSpace(phoneNumber),
 	}
 
-	hashedPwd, err := hashPassword(strings.TrimSpace(param.Password))
+	hashedPwd, err := utils.HashPassword(strings.TrimSpace(param.Password))
 	if err != nil {
 		return 0, err
 	}
@@ -41,7 +42,17 @@ func (s *service) RegisterUser(c context.Context, param generated.CreateUserJSON
 	return id, nil
 }
 
-func hashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	return string(bytes), err
+func (s *service) FindUserByPhone(c context.Context, phoneParam string) (*repository.User, error) {
+	phone, countryCode := utils.GetPhoneAndCountryCode(strings.TrimSpace(phoneParam))
+
+	user, err := s.repository.FindUserByPhoneAndCountryCode(c, phone, countryCode)
+	if err != nil {
+		return nil, err
+	}
+
+	if user == nil {
+		return nil, errors.New("wrong phone number")
+	}
+
+	return user, nil
 }

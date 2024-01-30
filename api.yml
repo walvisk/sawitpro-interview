@@ -17,6 +17,31 @@ info:
 servers:
   - url: http://localhost
 paths:
+  /login:
+    post:
+      summary: User login
+      operationId: Login
+      requestBody:
+        description: request body for POST /login
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: success response for POST /login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        default:
+          description: error response for POST /login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /users:
     post:
       summary: Create new user
@@ -67,6 +92,29 @@ components:
           type: integer
           format: int64
           example: 1
+
+    LoginRequest:
+      type: object
+      required:
+        - phone
+        - password
+      properties:
+        phone:
+          type: string
+        password:
+          type: string
+
+    LoginResponse:
+      type: object
+      required:
+        - id
+        - token
+      properties:
+        id:
+          type: integer
+          format: int64
+        token:
+          type: string
 
     ErrorResponse:
       type: object
