@@ -49,6 +49,20 @@ func (mr *MockRepositoryInterfaceMockRecorder) CreateUser(arg0, arg1 interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockRepositoryInterface)(nil).CreateUser), arg0, arg1)
 }
 
+// CreateUserLog mocks base method.
+func (m *MockRepositoryInterface) CreateUserLog(c context.Context, u *User) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateUserLog", c, u)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateUserLog indicates an expected call of CreateUserLog.
+func (mr *MockRepositoryInterfaceMockRecorder) CreateUserLog(c, u interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUserLog", reflect.TypeOf((*MockRepositoryInterface)(nil).CreateUserLog), c, u)
+}
+
 // FindUserByID mocks base method.
 func (m *MockRepositoryInterface) FindUserByID(arg0 context.Context, arg1 int64) (*User, error) {
 	m.ctrl.T.Helper()
@@ -77,4 +91,18 @@ func (m *MockRepositoryInterface) FindUserByPhoneAndCountryCode(arg0 context.Con
 func (mr *MockRepositoryInterfaceMockRecorder) FindUserByPhoneAndCountryCode(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindUserByPhoneAndCountryCode", reflect.TypeOf((*MockRepositoryInterface)(nil).FindUserByPhoneAndCountryCode), arg0, arg1, arg2)
+}
+
+// UpdateUser mocks base method.
+func (m *MockRepositoryInterface) UpdateUser(arg0 context.Context, arg1 *User) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateUser", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateUser indicates an expected call of UpdateUser.
+func (mr *MockRepositoryInterfaceMockRecorder) UpdateUser(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockRepositoryInterface)(nil).UpdateUser), arg0, arg1)
 }

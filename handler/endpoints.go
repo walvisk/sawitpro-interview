@@ -10,7 +10,7 @@ import (
 )
 
 func (s *Server) CreateUser(c echo.Context) error {
-	var payload generated.CreateUserRequest
+	var payload generated.BaseUser
 	if err := c.Bind(payload); err != nil {
 		return c.JSON(http.StatusBadRequest, generated.ErrorResponse{
 			Kind:    "BadRequest",
@@ -54,7 +54,7 @@ func (s *Server) CreateUser(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, generated.CreateUserResponse{Id: id})
+	return c.JSON(http.StatusOK, generated.BaseUser{Id: id})
 }
 
 func (s *Server) Login(c echo.Context) error {
@@ -104,7 +104,7 @@ func (s *Server) Login(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, generated.LoginResponse{
+	return c.JSON(http.StatusOK, generated.BaseUser{
 		Id:    user.ID,
 		Token: token,
 	})
@@ -141,7 +141,7 @@ func (s *Server) Profile(c echo.Context, id int64) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, generated.ProfileResponse{
+	return c.JSON(http.StatusOK, generated.BaseUser{
 		FullName: user.FullName,
 		Phone:    user.Phone,
 	})
@@ -164,7 +164,7 @@ func (s *Server) UpdateUser(c echo.Context, id int64) error {
 		})
 	}
 
-	var payload generated.UpdateUser
+	var payload generated.BaseUser
 	if err := c.Bind(payload); err != nil {
 		return c.JSON(http.StatusBadRequest, generated.ErrorResponse{
 			Kind:    "BadRequest",
@@ -226,7 +226,7 @@ func (s *Server) UpdateUser(c echo.Context, id int64) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, generated.UpdateUser{
+	return c.JSON(http.StatusOK, generated.BaseUser{
 		FullName: user.FullName,
 		Phone:    user.Phone,
 	})
