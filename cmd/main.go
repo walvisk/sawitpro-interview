@@ -9,6 +9,7 @@ import (
 	"github.com/SawitProRecruitment/UserService/repository"
 	"github.com/SawitProRecruitment/UserService/service/auth"
 	"github.com/SawitProRecruitment/UserService/service/user"
+	userLog "github.com/SawitProRecruitment/UserService/service/user_log"
 
 	"github.com/labstack/echo/v4"
 )
@@ -34,14 +35,18 @@ func newServer() *handler.Server {
 		PrivateKeyFile: os.Getenv("PRIVATE_KEY_FILE"),
 		PublicKeyFile:  os.Getenv("PUBLIC_KEY_FILE"),
 	}
+
 	authService, err := auth.NewAuthService(authServiceOpts)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	userLogService := userLog.NewUserLogService(repo)
+
 	opts := handler.NewServerOptions{
-		UserService: userService,
-		AuthService: authService,
+		UserService:    userService,
+		AuthService:    authService,
+		UserLogService: userLogService,
 	}
 	return handler.NewServer(opts)
 }

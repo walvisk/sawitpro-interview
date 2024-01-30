@@ -11,4 +11,5 @@ type RepositoryInterface interface {
 	FindUserByPhoneAndCountryCode(context.Context, string, string) (*User, error)
 	FindUserByID(context.Context, int64) (*User, error)
 	UpdateUser(context.Context, *User) error
+	CreateUserLog(c context.Context, u *User) error
 }

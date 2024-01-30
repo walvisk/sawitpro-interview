@@ -4,6 +4,7 @@ import (
 	"regexp"
 
 	"github.com/SawitProRecruitment/UserService/generated"
+	"github.com/SawitProRecruitment/UserService/utils"
 )
 
 type UserValidator struct {
@@ -33,7 +34,7 @@ func (uv *UserValidator) ValidatePhone() *UserValidator {
 		return uv
 	}
 
-	countryCode, phoneNumber := uv.Phone[:3], uv.Phone[3:]
+	countryCode, phoneNumber := utils.GetPhoneAndCountryCode(uv.Phone)
 	if len(phoneNumber) < 10 || len(phoneNumber) > 13 || countryCode != "+62" {
 		uv.Errors = append(uv.Errors, &generated.ErrorResponseDetail{
 			Error: "phone number must be between 10 and 13 characters and start with '+62'",

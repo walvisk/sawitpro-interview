@@ -141,3 +141,17 @@ func (r *Repository) UpdateUser(ctx context.Context, u *User) error {
 
 	return nil
 }
+
+func (r *Repository) CreateUserLog(ctx context.Context, u *User) error {
+	query := `
+		INSERT INTO user_logs (user_id, login_at)
+		VALUES ($1, $2)
+	`
+
+	_, err := r.Db.ExecContext(ctx, query, u.ID, time.Now)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

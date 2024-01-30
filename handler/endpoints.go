@@ -96,6 +96,14 @@ func (s *Server) Login(c echo.Context) error {
 		})
 	}
 
+	err = s.UserLogService.CreateUserLog(c.Request().Context(), user)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, generated.ErrorResponse{
+			Kind:    "InternalServerError",
+			Message: err.Error(),
+		})
+	}
+
 	return c.JSON(http.StatusOK, generated.LoginResponse{
 		Id:    user.ID,
 		Token: token,
