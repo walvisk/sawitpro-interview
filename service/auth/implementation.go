@@ -58,6 +58,30 @@ func (s *service) GenerateJWT() (string, error) {
 	return signedToken, nil
 }
 
+func (s *service) ValidateJWT(token string) error {
+	validToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+			return nil, errors.New("invalid token")
+		}
+
+		return s.publicKey, nil
+	})
+	if err != nil {
+		return err
+	}
+
+	claims, ok := validToken.Claims.(jwt.RegisteredClaims)
+	if !ok {
+		return errors.New("invalid token")
+	}
+
+	if time.Now().After(claims.ExpiresAt.Time) {
+		return errors.New("token expired")
+	}
+
+	return nil
+}
+
 func initKey(publicKeyFile, privateKeyFile string) (*rsa.PublicKey, *rsa.PrivateKey, error) {
 	dir, err := os.Getwd()
 	if err != nil {

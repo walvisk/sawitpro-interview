@@ -64,3 +64,32 @@ func (r *Repository) FindUserByPhoneAndCountryCode(ctx context.Context, phone, c
 
 	return &user, nil
 }
+
+func (r *Repository) FindUserByID(ctx context.Context, id int64) (*User, error) {
+	query := `
+		SELECT id, full_name, password,  phone, country_code, created_at, updated_at
+		FROM users
+		WHERE id = $1
+		LIMIT 1
+	`
+
+	var user User
+	err := r.Db.QueryRowContext(ctx, query, id).Scan(
+		&user.ID,
+		&user.FullName,
+		&user.Password,
+		&user.Phone,
+		&user.CountryCode,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	return &user, nil
+}

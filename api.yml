@@ -67,7 +67,41 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /users/{id}:
+    get:
+      description: get user profile based user id
+      operationId: profile
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to fetch
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: pet response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     CreateUserRequest:
       type: object
@@ -116,6 +150,17 @@ components:
         token:
           type: string
 
+    ProfileResponse:
+      type: object
+      required:
+        - phone
+        - full_name
+      properties:
+        phone:
+          type: string
+        full_name:
+          type: string
+
     ErrorResponse:
       type: object
       required:
@@ -147,3 +192,5 @@ components:
           x-go-type-skip-optional-pointer: true
 
 
+
+# TODO: can unify response or request to same user component

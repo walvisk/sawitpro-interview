@@ -56,3 +56,16 @@ func (s *service) FindUserByPhone(c context.Context, phoneParam string) (*reposi
 
 	return user, nil
 }
+
+func (s *service) FindUserByID(c context.Context, id int64) (*repository.User, error) {
+	user, err := s.repository.FindUserByID(c, id)
+	if err != nil {
+		return nil, err
+	}
+
+	if user == nil {
+		return nil, errors.New("user not found")
+	}
+
+	return user, nil
+}
