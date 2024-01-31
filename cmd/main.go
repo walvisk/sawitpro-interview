@@ -10,7 +10,7 @@ import (
 	"github.com/SawitProRecruitment/UserService/repository"
 	"github.com/SawitProRecruitment/UserService/service/auth"
 	"github.com/SawitProRecruitment/UserService/service/user"
-	userLog "github.com/SawitProRecruitment/UserService/service/user_log"
+	"github.com/SawitProRecruitment/UserService/service/userlog"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -45,7 +45,7 @@ func newServer() *handler.Server {
 		log.Fatal(err)
 	}
 
-	userLogService := userLog.NewUserLogService(repo)
+	userLogService := userlog.NewUserLogService(repo)
 
 	opts := handler.NewServerOptions{
 		UserService:    userService,

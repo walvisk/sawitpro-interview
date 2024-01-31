@@ -1,4 +1,4 @@
-package userLog
+package userlog
 
 import (
 	"context"
