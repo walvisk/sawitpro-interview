@@ -31,5 +31,7 @@ generated
 
 .env
 
-.key
-.pem
+*.key
+*.key.pub
+
+*.pem
