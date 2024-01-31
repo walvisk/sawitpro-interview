@@ -20,7 +20,7 @@ func NewUserService(repository repository.RepositoryInterface) Service {
 }
 
 func (s *service) RegisterUser(c context.Context, param generated.CreateUserJSONRequestBody) (int64, error) {
-	countryCode, phoneNumber := param.Phone[:3], param.Phone[3:]
+	phoneNumber, countryCode := utils.GetPhoneAndCountryCode(strings.TrimSpace(param.Phone))
 	u := repository.User{
 		FullName:    strings.TrimSpace(param.FullName),
 		CountryCode: strings.TrimSpace(countryCode),
