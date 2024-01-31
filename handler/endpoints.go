@@ -14,7 +14,7 @@ func (s *Server) CreateUser(c echo.Context) error {
 	if err := c.Bind(payload); err != nil {
 		return c.JSON(http.StatusBadRequest, generated.ErrorResponse{
 			Kind:    "BadRequest",
-			Message: "invalid json format",
+			Message: err.Error(),
 		})
 	}
 
