@@ -97,16 +97,16 @@ func (r *Repository) FindUserByID(ctx context.Context, id int64) (*User, error) 
 	return &user, nil
 }
 
-func (r *Repository) UpdateUser(ctx context.Context, u *User) error {
+func (r *Repository) UpdateUser(ctx context.Context, u *User, fullName, phone string) error {
 	var setClause strings.Builder
 	var setParams []interface{}
 
-	if u.FullName != "" {
+	if fullName != "" {
 		setClause.WriteString("full_name = $2, ")
 		setParams = append(setParams, u.FullName)
 	}
 
-	if u.Phone != "" {
+	if phone != "" {
 		setClause.WriteString("phone = $3, ")
 		setParams = append(setParams, u.Phone)
 	}

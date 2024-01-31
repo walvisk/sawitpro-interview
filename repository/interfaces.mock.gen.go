@@ -94,15 +94,15 @@ func (mr *MockRepositoryInterfaceMockRecorder) FindUserByPhoneAndCountryCode(arg
 }
 
 // UpdateUser mocks base method.
-func (m *MockRepositoryInterface) UpdateUser(arg0 context.Context, arg1 *User) error {
+func (m *MockRepositoryInterface) UpdateUser(c context.Context, u *User, fullName, phone string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateUser", arg0, arg1)
+	ret := m.ctrl.Call(m, "UpdateUser", c, u, fullName, phone)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpdateUser indicates an expected call of UpdateUser.
-func (mr *MockRepositoryInterfaceMockRecorder) UpdateUser(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockRepositoryInterfaceMockRecorder) UpdateUser(c, u, fullName, phone interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockRepositoryInterface)(nil).UpdateUser), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockRepositoryInterface)(nil).UpdateUser), c, u, fullName, phone)
 }

@@ -10,6 +10,6 @@ type RepositoryInterface interface {
 	CreateUser(context.Context, *User) (int64, error)
 	FindUserByPhoneAndCountryCode(context.Context, string, string) (*User, error)
 	FindUserByID(context.Context, int64) (*User, error)
-	UpdateUser(context.Context, *User) error
+	UpdateUser(c context.Context, u *User, fullName, phone string) error
 	CreateUserLog(c context.Context, u *User) error
 }

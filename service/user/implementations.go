@@ -62,13 +62,8 @@ func (s *service) FindUserByID(c context.Context, id int64) (*repository.User, e
 }
 
 func (s *service) UpdateUser(c context.Context, u *repository.User, fullName, phone string) error {
-	phoneNo, countryCode := utils.GetPhoneAndCountryCode(strings.TrimSpace(phone))
-
-	u.CountryCode = countryCode
-	u.Phone = phoneNo
-	u.FullName = strings.TrimSpace(fullName)
-
-	err := s.repository.UpdateUser(c, u)
+	phoneNo, _ := utils.GetPhoneAndCountryCode(strings.TrimSpace(phone))
+	err := s.repository.UpdateUser(c, u, strings.TrimSpace(fullName), phoneNo)
 	if err != nil {
 		return err
 	}
