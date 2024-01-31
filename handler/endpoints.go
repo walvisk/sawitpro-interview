@@ -11,7 +11,7 @@ import (
 
 func (s *Server) CreateUser(c echo.Context) error {
 	var payload generated.BaseUser
-	if err := c.Bind(payload); err != nil {
+	if err := c.Bind(&payload); err != nil {
 		return c.JSON(http.StatusBadRequest, generated.ErrorResponse{
 			Kind:    "BadRequest",
 			Message: err.Error(),
@@ -54,7 +54,7 @@ func (s *Server) CreateUser(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, generated.BaseUser{Id: id})
+	return c.JSON(http.StatusCreated, generated.BaseUser{Id: id})
 }
 
 func (s *Server) Login(c echo.Context) error {
