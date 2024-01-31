@@ -62,7 +62,7 @@ func (s *Server) Login(c echo.Context) error {
 	if err := c.Bind(&payload); err != nil {
 		return c.JSON(http.StatusBadRequest, generated.ErrorResponse{
 			Kind:    "BadRequest",
-			Message: "invalid json format",
+			Message: err.Error(),
 		})
 	}
 
@@ -168,7 +168,7 @@ func (s *Server) UpdateUser(c echo.Context, id int64) error {
 	if err := c.Bind(&payload); err != nil {
 		return c.JSON(http.StatusBadRequest, generated.ErrorResponse{
 			Kind:    "BadRequest",
-			Message: "invalid json format",
+			Message: err.Error(),
 		})
 	}
 
