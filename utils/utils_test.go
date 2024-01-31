@@ -25,8 +25,35 @@ func TestAuthenticatePassword(t *testing.T) {
 		t.FailNow()
 	}
 
-	valid := ComparePasswordHash(dummyPwd, hashedPwd)
-	if !valid {
-		t.Fatal("password should be valid")
+	tests := []struct {
+		name      string
+		pwd       string
+		assertion func(bool)
+	}{
+		{
+			name: "when given correct password, return true",
+			pwd:  dummyPwd,
+			assertion: func(b bool) {
+				if !b {
+					t.Fatal("password should be valid")
+				}
+			},
+		},
+		{
+			name: "when given wrong password, return false",
+			pwd:  "dummyPwd",
+			assertion: func(b bool) {
+				if b {
+					t.Fatal("password should be invalid")
+				}
+			},
+		},
+	}
+
+	for _, tC := range tests {
+		t.Run(tC.name, func(t *testing.T) {
+			valid := ComparePasswordHash(tC.pwd, hashedPwd)
+			tC.assertion(valid)
+		})
 	}
 }
