@@ -74,7 +74,7 @@ func (s *Server) Login(c echo.Context) error {
 		})
 	}
 	if user == nil {
-		return c.JSON(http.StatusConflict, generated.ErrorResponse{
+		return c.JSON(http.StatusBadRequest, generated.ErrorResponse{
 			Kind:    "BadRequest",
 			Message: "user not found",
 		})
@@ -204,21 +204,23 @@ func (s *Server) UpdateUser(c echo.Context, id int64) error {
 		})
 	}
 
-	checkUser, err := s.UserService.FindUserByPhone(c.Request().Context(), payload.Phone)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, generated.ErrorResponse{
-			Kind:    "InternalServerError",
-			Message: err.Error(),
-		})
-	}
-	if checkUser != nil {
-		return c.JSON(http.StatusConflict, generated.ErrorResponse{
-			Kind:    "BadRequest",
-			Message: "phone already existed",
-		})
+	if payload.Phone != "" {
+		checkUser, err := s.UserService.FindUserByPhone(c.Request().Context(), payload.Phone)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, generated.ErrorResponse{
+				Kind:    "InternalServerError",
+				Message: err.Error(),
+			})
+		}
+		if checkUser != nil {
+			return c.JSON(http.StatusConflict, generated.ErrorResponse{
+				Kind:    "BadRequest",
+				Message: "phone already existed",
+			})
+		}
 	}
 
-	err = s.UserService.UpdateUser(c.Request().Context(), user, payload.Phone, payload.FullName)
+	err = s.UserService.UpdateUser(c.Request().Context(), user, payload.FullName, payload.Phone)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, generated.ErrorResponse{
 			Kind:    "BadRequest",
@@ -233,10 +235,12 @@ func (s *Server) UpdateUser(c echo.Context, id int64) error {
 }
 
 func getToken(c echo.Context) (string, error) {
+	key := "Bearer "
 	authHeader := c.Request().Header.Get("Authorization")
-	if !strings.Contains(authHeader, "Bearer") {
+	if !strings.HasPrefix(authHeader, key) {
 		return "", errors.New("invalid token")
 	}
 
-	return strings.Replace(authHeader, "Bearer ", "", -1), nil
+	token := strings.TrimPrefix(authHeader, key)
+	return token, nil
 }

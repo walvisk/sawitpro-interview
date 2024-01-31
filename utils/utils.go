@@ -3,7 +3,7 @@ package utils
 import "golang.org/x/crypto/bcrypt"
 
 func GetPhoneAndCountryCode(phoneString string) (phone, code string) {
-	return phoneString[:3], phoneString[3:]
+	return phoneString[3:], phoneString[:3]
 }
 
 func HashPassword(password string) (string, error) {

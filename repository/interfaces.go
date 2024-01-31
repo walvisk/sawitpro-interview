@@ -7,9 +7,9 @@ package repository
 import "context"
 
 type RepositoryInterface interface {
-	CreateUser(context.Context, *User) (int64, error)
-	FindUserByPhoneAndCountryCode(context.Context, string, string) (*User, error)
-	FindUserByID(context.Context, int64) (*User, error)
+	CreateUser(c context.Context, u *User) (int64, error)
+	FindUserByPhoneAndCountryCode(c context.Context, phone, countryCode string) (*User, error)
+	FindUserByID(c context.Context, id int64) (*User, error)
 	UpdateUser(c context.Context, u *User, fullName, phone string) error
 	CreateUserLog(c context.Context, u *User) error
 }

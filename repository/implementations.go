@@ -3,8 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"fmt"
-	"strings"
 	"time"
 )
 
@@ -98,36 +96,19 @@ func (r *Repository) FindUserByID(ctx context.Context, id int64) (*User, error) 
 }
 
 func (r *Repository) UpdateUser(ctx context.Context, u *User, fullName, phone string) error {
-	var setClause strings.Builder
-	var setParams []interface{}
-
-	if fullName != "" {
-		setClause.WriteString("full_name = $2, ")
-		setParams = append(setParams, u.FullName)
-	}
-
-	if phone != "" {
-		setClause.WriteString("phone = $3, ")
-		setParams = append(setParams, u.Phone)
-	}
-
-	setClause.WriteString("updated_at = $4")
-	setParams = append(setParams, time.Now())
-
-	query := fmt.Sprintf(`
+	query := `
 		UPDATE users
-		SET %s
+		SET full_name = $2, phone = $3, updated_at = $4
 		WHERE id = $1
 		RETURNING id, full_name, phone, country_code, created_at, updated_at
-	`, setClause.String())
-	params := append([]interface{}{u.ID}, setParams...)
+	`
 
 	tx, err := r.Db.Begin()
 	if err != nil {
 		return err
 	}
 
-	err = tx.QueryRowContext(ctx, query, u.ID, params).Scan(
+	err = tx.QueryRowContext(ctx, query, u.ID, fullName, phone, time.Now()).Scan(
 		&u.ID,
 		&u.FullName,
 		&u.Phone,
@@ -136,6 +117,11 @@ func (r *Repository) UpdateUser(ctx context.Context, u *User, fullName, phone st
 		&u.UpdatedAt,
 	)
 	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
 		return err
 	}
 
