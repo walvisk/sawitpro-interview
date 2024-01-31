@@ -148,7 +148,7 @@ func (r *Repository) CreateUserLog(ctx context.Context, u *User) error {
 		VALUES ($1, $2)
 	`
 
-	_, err := r.Db.ExecContext(ctx, query, u.ID, time.Now)
+	_, err := r.Db.ExecContext(ctx, query, u.ID, time.Now())
 	if err != nil {
 		return err
 	}
