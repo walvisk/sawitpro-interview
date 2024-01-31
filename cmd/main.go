@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/SawitProRecruitment/UserService/generated"
 	"github.com/SawitProRecruitment/UserService/handler"
@@ -11,10 +12,13 @@ import (
 	"github.com/SawitProRecruitment/UserService/service/user"
 	userLog "github.com/SawitProRecruitment/UserService/service/user_log"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 )
 
 func main() {
+	loadEnv()
+
 	e := echo.New()
 
 	var server generated.ServerInterface = newServer()
@@ -49,4 +53,17 @@ func newServer() *handler.Server {
 		UserLogService: userLogService,
 	}
 	return handler.NewServer(opts)
+}
+
+func loadEnv() {
+	dir, err := os.Getwd()
+	if err != nil {
+		log.Fatal("failed to get env")
+	}
+
+	envPath := filepath.Join(dir, ".env")
+	err = godotenv.Load(envPath)
+	if err != nil {
+		log.Fatal("failed to load env")
+	}
 }

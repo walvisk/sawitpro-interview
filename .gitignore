@@ -30,3 +30,6 @@ build
 generated
 
 .env
+
+.key
+.pem
