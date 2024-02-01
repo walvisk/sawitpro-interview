@@ -28,10 +28,3 @@ build
 
 # Generated
 generated
-
-.env
-
-*.key
-*.key.pub
-
-*.pem
